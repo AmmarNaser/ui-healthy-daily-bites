@@ -1,8 +1,9 @@
-import DailyCard from "@/components/DailyCard";
-import { getDailyTip } from "@/lib/getDailyTip";
+import { getDailyTip, getAllDailyTips } from "@/lib/getDailyTip";
+import TipsPageClient from "@/components/TipsPageClient";
 
 export default async function Home() {
   const dailyTip = await getDailyTip();
+  const allTips = await getAllDailyTips();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -42,11 +43,7 @@ export default async function Home() {
             </p>
           </div>
           {dailyTip ? (
-            <DailyCard
-              title={dailyTip.title}
-              content={dailyTip.content}
-              date={dailyTip.date}
-            />
+            <TipsPageClient dailyTip={dailyTip} allTips={allTips} />
           ) : (
             <div className="rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/50 p-8 text-center">
               <p className="text-gray-600 text-lg">
@@ -62,7 +59,7 @@ export default async function Home() {
         <div className="container mx-auto px-6 py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
             <div className="text-base font-semibold tracking-wide">
-              © 2025 - ammar
+              © 2025 - Ammar
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-6 text-sm">
               <a
