@@ -10,8 +10,13 @@ export async function getDailyTip(date?: Date): Promise<DailyTip | null> {
   // This will read from the content submodule
   const targetDate = date || new Date();
   
-  // Placeholder implementation
-  return null;
+  // Temporary mock data for testing
+  return {
+    id: "1",
+    title: "نصيحة صحية يومية",
+    content: "تأكد من شرب كمية كافية من الماء يومياً للحفاظ على رطوبة جسمك وصحتك.",
+    date: targetDate.toLocaleDateString('ar-SA')
+  };
 }
 
 export async function getAllDailyTips(): Promise<DailyTip[]> {

@@ -5,12 +5,42 @@ export default async function Home() {
   const dailyTip = await getDailyTip();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="w-full">
-          <h1 className="mb-8 text-3xl font-semibold text-black dark:text-zinc-50">
-            معلومة اليوم
-          </h1>
+    <div className="flex flex-col min-h-screen">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-emerald-600 via-green-600 to-emerald-500 text-white shadow-xl backdrop-blur-sm border-b border-emerald-400/20">
+        <div className="container mx-auto px-6 py-5">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              <div className="text-xl font-bold tracking-tight">
+                Domain for Sale: $500
+              </div>
+            </div>
+            <div className="text-sm font-medium">
+              <a
+                href="mailto:me@ammarhub.com"
+                className="hover:text-emerald-100 transition-all duration-300 hover:underline decoration-2 underline-offset-4">
+                me@ammarhub.com
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 container mx-auto px-6 py-16 max-w-5xl animate-fade-in-up">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-10 md:p-12 border border-emerald-100/50">
+          <div className="text-center mb-12">
+            <div className="inline-block mb-4">
+              <div className="w-16 h-1 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full mx-auto"></div>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-emerald-700 via-green-600 to-emerald-700 bg-clip-text text-transparent mb-3">
+              Today&apos;s Health Tip
+            </h1>
+            <p className="text-emerald-600/70 text-lg font-medium">
+              Daily Health Tips
+            </p>
+          </div>
           {dailyTip ? (
             <DailyCard
               title={dailyTip.title}
@@ -18,14 +48,57 @@ export default async function Home() {
               date={dailyTip.date}
             />
           ) : (
-            <div className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-              <p className="text-zinc-700 dark:text-zinc-300">
-                لا توجد معلومات متاحة حالياً
+            <div className="rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/50 p-8 text-center">
+              <p className="text-gray-600 text-lg">
+                No information available at the moment
               </p>
             </div>
           )}
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-gradient-to-r from-emerald-700 via-green-700 to-emerald-700 text-white mt-auto shadow-2xl border-t border-emerald-500/30">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div className="text-base font-semibold tracking-wide">
+              © 2025 - ammar
+            </div>
+            <div className="flex flex-col sm:flex-row items-center gap-6 text-sm">
+              <a
+                href="mailto:me@ammarhub.com"
+                className="hover:text-emerald-200 transition-all duration-300 hover:scale-105 font-medium flex items-center gap-2">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+                me@ammarhub.com
+              </a>
+              <a
+                href="https://www.linkedin.com/in/ammarelnasser/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-emerald-200 transition-all duration-300 hover:scale-105 font-medium flex items-center gap-2">
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+                LinkedIn
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
