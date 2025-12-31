@@ -20,6 +20,7 @@ export default function TipsPageClient({ dailyTip, allTips }: TipsPageClientProp
         content={dailyTip.content}
         date={dailyTip.date}
         onClick={() => setIsModalOpen(true)}
+        tip={dailyTip}
       />
       <TipsModal
         tips={allTips}

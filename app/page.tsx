@@ -14,7 +14,7 @@ export default async function Home() {
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               <div className="text-xl font-bold tracking-tight">
-                Domain for Sale: $500
+                This Domain for Sale: $500
               </div>
             </div>
             <div className="text-sm font-medium">

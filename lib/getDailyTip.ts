@@ -7,6 +7,9 @@ export interface DailyTip {
   content: string;
   date: string;
   fullContent?: string; // Full markdown content
+  healthTip?: string; // The main health tip
+  steps?: Array<{ number: string; title: string; description: string }>; // Structured steps
+  quickTip?: string; // Quick tip at the end
 }
 
 // Parse markdown file content
@@ -14,9 +17,16 @@ function parseMarkdown(content: string): {
   title: string;
   shortTip: string;
   fullContent: string;
+  healthTip?: string;
+  steps?: Array<{ number: string; title: string; description: string }>;
+  quickTip?: string;
 } {
   let title = "";
   let shortTip = "";
+  let healthTip = "";
+  const steps: Array<{ number: string; title: string; description: string }> =
+    [];
+  let quickTip = "";
   const fullContent = content;
 
   // Extract title (first # heading)
@@ -25,21 +35,56 @@ function parseMarkdown(content: string): {
     title = titleMatch[1].trim();
   }
 
-  // Extract short tip - look for patterns like:
-  // **معلومة صحية قصيرة:** followed by text
-  // or ## معلومة صحية قصيرة followed by text
-  const patterns = [
-    /\*\*معلومة صحية قصيرة:\*\*\s*([\s\S]+?)(?=\n\n|###|##|$)/,
-    /##\s*معلومة صحية قصيرة\s*\n([\s\S]+?)(?=\n\n|###|##|$)/,
-    /معلومة صحية قصيرة[:\s]+\*\*([\s\S]+?)\*\*/,
-  ];
+  // Extract Health Tip (after ### Health Tip:)
+  const healthTipMatch = content.match(
+    /###\s*Health Tip:\s*\n(.+?)(?=\n\n|###|$)/i
+  );
+  if (healthTipMatch) {
+    healthTip = healthTipMatch[1].trim();
+    shortTip = healthTip;
+  }
 
-  for (const pattern of patterns) {
-    const match = content.match(pattern);
-    if (match && match[1]) {
-      shortTip = match[1].trim().replace(/\*\*/g, "").replace(/\n/g, " ");
-      break;
+  // Extract Explanation steps (numbered list after ### Explanation:)
+  const explanationMatch = content.match(
+    /###\s*Explanation:\s*\n([\s\S]+?)(?=\n\n###|$)/i
+  );
+  if (explanationMatch) {
+    const explanationText = explanationMatch[1];
+    // Parse numbered list items: 1. **Title:** Description
+    // Process each line to extract all steps
+    const lines = explanationText.split("\n").filter((line) => line.trim());
+
+    for (const line of lines) {
+      // Match: 1. **Title:** Description or 1. **Title**: Description (flexible with colon)
+      const stepMatch = line.match(
+        /^(\d+)\.\s+\*\*(.+?)\*\*\s*[:\u0589]\s*(.+)$/
+      );
+      if (stepMatch) {
+        steps.push({
+          number: stepMatch[1],
+          title: stepMatch[2].trim(),
+          description: stepMatch[3].trim(),
+        });
+      } else {
+        // Fallback: try without requiring colon (for edge cases)
+        const fallbackMatch = line.match(/^(\d+)\.\s+\*\*(.+?)\*\*\s+(.+)$/);
+        if (fallbackMatch) {
+          steps.push({
+            number: fallbackMatch[1],
+            title: fallbackMatch[2].trim(),
+            description: fallbackMatch[3].trim(),
+          });
+        }
+      }
     }
+  }
+
+  // Extract Quick Tip (after ### Quick Tip:)
+  const quickTipMatch = content.match(
+    /###\s*Quick Tip:\s*\n(.+?)(?=\n\n|###|$)/i
+  );
+  if (quickTipMatch) {
+    quickTip = quickTipMatch[1].trim();
   }
 
   // Fallback: use first paragraph after title
@@ -55,7 +100,7 @@ function parseMarkdown(content: string): {
     shortTip = title || "Daily health tip";
   }
 
-  return { title, shortTip, fullContent };
+  return { title, shortTip, fullContent, healthTip, steps, quickTip };
 }
 
 // Format date as YYYY-MM-DD
@@ -91,6 +136,9 @@ export async function getDailyTip(date?: Date): Promise<DailyTip | null> {
           day: "numeric",
         }),
         fullContent: parsed.fullContent,
+        healthTip: parsed.healthTip,
+        steps: parsed.steps,
+        quickTip: parsed.quickTip,
       };
     } catch {
       // File doesn't exist for this date, return null
@@ -131,6 +179,9 @@ export async function getAllDailyTips(): Promise<DailyTip[]> {
             day: "numeric",
           }),
           fullContent: parsed.fullContent,
+          healthTip: parsed.healthTip,
+          steps: parsed.steps,
+          quickTip: parsed.quickTip,
         });
       } catch (fileError) {
         console.error(`Error reading file ${file}:`, fileError);
