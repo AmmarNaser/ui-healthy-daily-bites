@@ -6,11 +6,11 @@ export default async function Home() {
   const allTips = await getAllDailyTips();
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <header className="bg-gradient-to-r from-emerald-600 via-green-600 to-emerald-500 text-white shadow-xl backdrop-blur-sm border-b border-emerald-400/20">
-        <div className="container mx-auto px-6 py-5">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+      <header className="bg-gradient-to-r from-emerald-600 via-green-600 to-emerald-500 text-white shadow-xl backdrop-blur-sm border-b border-emerald-400/20 flex-shrink-0">
+        <div className="container mx-auto px-6 py-3">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               <div className="text-xl font-bold tracking-tight">
@@ -29,16 +29,16 @@ export default async function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 container mx-auto px-6 py-16 max-w-5xl animate-fade-in-up">
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-10 md:p-12 border border-emerald-100/50">
-          <div className="text-center mb-12">
-            <div className="inline-block mb-4">
+      <main className="flex-1 flex items-center justify-center container mx-auto px-6 max-w-5xl animate-fade-in-up overflow-y-auto">
+        <div className="w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 border border-emerald-100/50">
+          <div className="text-center mb-6">
+            <div className="inline-block mb-2">
               <div className="w-16 h-1 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full mx-auto"></div>
             </div>
-            <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-emerald-700 via-green-600 to-emerald-700 bg-clip-text text-transparent mb-3">
+            <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-emerald-700 via-green-600 to-emerald-700 bg-clip-text text-transparent mb-2">
               Today&apos;s Health Tip
             </h1>
-            <p className="text-emerald-600/70 text-lg font-medium">
+            <p className="text-emerald-600/70 text-base font-medium">
               Daily Health Tips
             </p>
           </div>
@@ -55,8 +55,8 @@ export default async function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-emerald-700 via-green-700 to-emerald-700 text-white mt-auto shadow-2xl border-t border-emerald-500/30">
-        <div className="container mx-auto px-6 py-8">
+      <footer className="bg-gradient-to-r from-emerald-700 via-green-700 to-emerald-700 text-white flex-shrink-0 shadow-2xl border-t border-emerald-500/30">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
             <div className="text-base font-semibold tracking-wide">
               © 2025 - Ammar

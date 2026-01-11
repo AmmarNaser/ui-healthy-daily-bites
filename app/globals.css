@@ -16,6 +16,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 body {
   background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
   color: var(--foreground);

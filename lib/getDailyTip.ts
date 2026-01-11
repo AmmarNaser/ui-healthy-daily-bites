@@ -35,56 +35,94 @@ function parseMarkdown(content: string): {
     title = titleMatch[1].trim();
   }
 
-  // Extract Health Tip (after ### Health Tip:)
-  const healthTipMatch = content.match(
+  // Extract Health Tip - support both old and new formats
+  // New format: ## Short Health Tip
+  // Old format: ### Health Tip:
+  const healthTipMatchNew = content.match(
+    /##\s*Short Health Tip\s*\n(.+?)(?=\n\n##|###|$)/i
+  );
+  const healthTipMatchOld = content.match(
     /###\s*Health Tip:\s*\n(.+?)(?=\n\n|###|$)/i
   );
-  if (healthTipMatch) {
-    healthTip = healthTipMatch[1].trim();
+  
+  if (healthTipMatchNew) {
+    healthTip = healthTipMatchNew[1].trim();
+    shortTip = healthTip;
+  } else if (healthTipMatchOld) {
+    healthTip = healthTipMatchOld[1].trim();
     shortTip = healthTip;
   }
 
-  // Extract Explanation steps (numbered list after ### Explanation:)
-  const explanationMatch = content.match(
+  // Extract Explanation steps - support both old and new formats
+  // New format: ## Simple Explanation
+  // Old format: ### Explanation:
+  const explanationMatchNew = content.match(
+    /##\s*Simple Explanation\s*\n([\s\S]+?)(?=\n\n##|###|$)/i
+  );
+  const explanationMatchOld = content.match(
     /###\s*Explanation:\s*\n([\s\S]+?)(?=\n\n###|$)/i
   );
-  if (explanationMatch) {
-    const explanationText = explanationMatch[1];
+  
+  const explanationText = explanationMatchNew?.[1] || explanationMatchOld?.[1];
+  
+  if (explanationText) {
     // Parse numbered list items: 1. **Title:** Description
     // Process each line to extract all steps
     const lines = explanationText.split("\n").filter((line) => line.trim());
 
     for (const line of lines) {
-      // Match: 1. **Title:** Description or 1. **Title**: Description (flexible with colon)
-      const stepMatch = line.match(
-        /^(\d+)\.\s+\*\*(.+?)\*\*\s*[:\u0589]\s*(.+)$/
+      // Match format: 1. **Point 1**: **Actual Title**: Description
+      // Extract the actual title (second bold text) instead of "Point X"
+      const nestedMatch = line.match(
+        /^(\d+)\.\s+\*\*Point\s+\d+\*\*\s*[:\u0589]\s*\*\*(.+?)\*\*\s*[:\u0589]\s*(.+)$/i
       );
-      if (stepMatch) {
+      if (nestedMatch) {
+        // Format: Point X: **Actual Title**: Description
         steps.push({
-          number: stepMatch[1],
-          title: stepMatch[2].trim(),
-          description: stepMatch[3].trim(),
+          number: nestedMatch[1],
+          title: nestedMatch[2].trim(),
+          description: nestedMatch[3].trim(),
         });
       } else {
-        // Fallback: try without requiring colon (for edge cases)
-        const fallbackMatch = line.match(/^(\d+)\.\s+\*\*(.+?)\*\*\s+(.+)$/);
-        if (fallbackMatch) {
+        // Match: 1. **Title:** Description or 1. **Title**: Description (flexible with colon)
+        const stepMatch = line.match(
+          /^(\d+)\.\s+\*\*(.+?)\*\*\s*[:\u0589]\s*(.+)$/
+        );
+        if (stepMatch) {
           steps.push({
-            number: fallbackMatch[1],
-            title: fallbackMatch[2].trim(),
-            description: fallbackMatch[3].trim(),
+            number: stepMatch[1],
+            title: stepMatch[2].trim(),
+            description: stepMatch[3].trim(),
           });
+        } else {
+          // Fallback: try without requiring colon (for edge cases)
+          const fallbackMatch = line.match(/^(\d+)\.\s+\*\*(.+?)\*\*\s+(.+)$/);
+          if (fallbackMatch) {
+            steps.push({
+              number: fallbackMatch[1],
+              title: fallbackMatch[2].trim(),
+              description: fallbackMatch[3].trim(),
+            });
+          }
         }
       }
     }
   }
 
-  // Extract Quick Tip (after ### Quick Tip:)
-  const quickTipMatch = content.match(
+  // Extract Quick Tip - support both old and new formats
+  // New format: ## Quick Tip
+  // Old format: ### Quick Tip:
+  const quickTipMatchNew = content.match(
+    /##\s*Quick Tip\s*\n(.+?)(?=\n\n##|###|$)/i
+  );
+  const quickTipMatchOld = content.match(
     /###\s*Quick Tip:\s*\n(.+?)(?=\n\n|###|$)/i
   );
-  if (quickTipMatch) {
-    quickTip = quickTipMatch[1].trim();
+  
+  if (quickTipMatchNew) {
+    quickTip = quickTipMatchNew[1].trim();
+  } else if (quickTipMatchOld) {
+    quickTip = quickTipMatchOld[1].trim();
   }
 
   // Fallback: use first paragraph after title
@@ -141,7 +179,12 @@ export async function getDailyTip(date?: Date): Promise<DailyTip | null> {
         quickTip: parsed.quickTip,
       };
     } catch {
-      // File doesn't exist for this date, return null
+      // File doesn't exist for this date, try to get the most recent tip
+      const allTips = await getAllDailyTips();
+      if (allTips.length > 0) {
+        // Return the most recent tip (already sorted by date, newest first)
+        return allTips[0];
+      }
       return null;
     }
   } catch (error) {
