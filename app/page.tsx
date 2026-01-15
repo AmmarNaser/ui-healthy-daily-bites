@@ -1,9 +1,17 @@
-import { getDailyTip, getAllDailyTips } from "@/lib/getDailyTip";
+import { getDailyTip, getAllDailyTips, type DailyTip } from "@/lib/getDailyTip";
 import TipsPageClient from "@/components/TipsPageClient";
+import OfferForm from "@/components/OfferForm";
 
 export default async function Home() {
-  const dailyTip = await getDailyTip();
-  const allTips = await getAllDailyTips();
+  let dailyTip: DailyTip | null = null;
+  let allTips: DailyTip[] = [];
+
+  try {
+    dailyTip = await getDailyTip();
+    allTips = await getAllDailyTips();
+  } catch (error) {
+    console.error("Error loading tips:", error);
+  }
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -18,11 +26,7 @@ export default async function Home() {
               </div>
             </div>
             <div className="text-sm font-medium">
-              <a
-                href="mailto:me@ammarhub.com"
-                className="hover:text-emerald-100 transition-all duration-300 hover:underline decoration-2 underline-offset-4">
-                me@ammarhub.com
-              </a>
+              <OfferForm />
             </div>
           </div>
         </div>
@@ -63,7 +67,7 @@ export default async function Home() {
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-6 text-sm">
               <a
-                href="mailto:me@ammarhub.com"
+                href="mailto:info@medziel.de"
                 className="hover:text-emerald-200 transition-all duration-300 hover:scale-105 font-medium flex items-center gap-2">
                 <svg
                   className="w-4 h-4"
@@ -77,7 +81,7 @@ export default async function Home() {
                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                me@ammarhub.com
+                info@medziel.de
               </a>
               <a
                 href="https://www.linkedin.com/in/ammarelnasser/"

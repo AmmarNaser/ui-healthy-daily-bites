@@ -74,7 +74,7 @@ function parseMarkdown(content: string): {
       // Match format: 1. **Point 1**: **Actual Title**: Description
       // Extract the actual title (second bold text) instead of "Point X"
       const nestedMatch = line.match(
-        /^(\d+)\.\s+\*\*Point\s+\d+\*\*\s*[:\u0589]\s*\*\*(.+?)\*\*\s*[:\u0589]\s*(.+)$/i
+        /^(\d+)\.\s+\*\*Point\s+\d+\*\*\s*:\s*\*\*(.+?)\*\*\s*:\s*(.+)$/i
       );
       if (nestedMatch) {
         // Format: Point X: **Actual Title**: Description
@@ -83,28 +83,28 @@ function parseMarkdown(content: string): {
           title: nestedMatch[2].trim(),
           description: nestedMatch[3].trim(),
         });
-      } else {
-        // Match: 1. **Title:** Description or 1. **Title**: Description (flexible with colon)
-        const stepMatch = line.match(
-          /^(\d+)\.\s+\*\*(.+?)\*\*\s*[:\u0589]\s*(.+)$/
-        );
-        if (stepMatch) {
-          steps.push({
-            number: stepMatch[1],
-            title: stepMatch[2].trim(),
-            description: stepMatch[3].trim(),
-          });
-        } else {
-          // Fallback: try without requiring colon (for edge cases)
-          const fallbackMatch = line.match(/^(\d+)\.\s+\*\*(.+?)\*\*\s+(.+)$/);
-          if (fallbackMatch) {
-            steps.push({
-              number: fallbackMatch[1],
-              title: fallbackMatch[2].trim(),
-              description: fallbackMatch[3].trim(),
-            });
-          }
-        }
+        continue;
+      }
+      
+      // Match: 1. **Title:** Description or 1. **Title**: Description (flexible with colon)
+      const stepMatch = line.match(/^(\d+)\.\s+\*\*(.+?)\*\*\s*[:\u0589]\s*(.+)$/);
+      if (stepMatch) {
+        steps.push({
+          number: stepMatch[1],
+          title: stepMatch[2].trim(),
+          description: stepMatch[3].trim(),
+        });
+        continue;
+      }
+      
+      // Fallback: try without requiring colon (for edge cases)
+      const fallbackMatch = line.match(/^(\d+)\.\s+\*\*(.+?)\*\*\s+(.+)$/);
+      if (fallbackMatch) {
+        steps.push({
+          number: fallbackMatch[1],
+          title: fallbackMatch[2].trim(),
+          description: fallbackMatch[3].trim(),
+        });
       }
     }
   }
