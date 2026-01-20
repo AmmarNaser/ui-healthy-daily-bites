@@ -30,11 +30,15 @@ export async function POST(request: NextRequest) {
 
     // Send email using Resend
     try {
+      // Use verified sender (from env or default) with user's email as replyTo
+      // This ensures emails are always deliverable regardless of user's email domain
+      const fromEmail = process.env.RESEND_FROM_EMAIL || "Domain Offer <onboarding@resend.dev>";
+      
       const { data, error } = await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || "Domain Offer <onboarding@resend.dev>",
+        from: fromEmail,
         to: "info@medziel.de",
         replyTo: email,
-        subject: "Domain Offer - Healthy Daily Bites",
+        subject: `Domain Offer from ${name} - Healthy Daily Bites`,
         html: `
           <!DOCTYPE html>
           <html>
