@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,39 +16,94 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Using EmailJS-like approach or direct email service
-    // You can use any email service here. Examples:
-    
-    // Option 1: Using Resend (recommended - add to package.json: "resend": "^latest")
-    /*
-    import { Resend } from 'resend';
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
-      from: 'Domain Offer <noreply@yourdomain.com>',
-      to: 'info@medziel.de',
-      subject: 'Domain Offer - Healthy Daily Bites',
-      html: `
-        <h2>New Domain Offer Received</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Offer Price:</strong> $${price}</p>
-        <hr>
-        <p>This offer was submitted from the Healthy Daily Bites website.</p>
-      `,
-    });
-    */
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error("RESEND_API_KEY is not configured");
+      // Log for development but still return success to user
+      console.log("Domain Offer Received (email not sent - API key missing):", { name, email, price });
+      return NextResponse.json(
+        { 
+          success: true,
+          message: "Offer received (email service not configured)" 
+        },
+        { status: 200 }
+      );
+    }
 
-    // Option 2: Using Nodemailer with SMTP
-    // Option 3: Using SendGrid
-    // Option 4: Using AWS SES
+    // Send email using Resend
+    try {
+      const { data, error } = await resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL || "Domain Offer <onboarding@resend.dev>",
+        to: "info@medziel.de",
+        replyTo: email,
+        subject: "Domain Offer - Healthy Daily Bites",
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+                .content { background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-top: none; }
+                .field { margin-bottom: 15px; }
+                .label { font-weight: bold; color: #059669; }
+                .value { margin-top: 5px; font-size: 16px; }
+                .footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h2 style="margin: 0;">New Domain Offer Received</h2>
+                </div>
+                <div class="content">
+                  <div class="field">
+                    <div class="label">Name:</div>
+                    <div class="value">${name}</div>
+                  </div>
+                  <div class="field">
+                    <div class="label">Email:</div>
+                    <div class="value"><a href="mailto:${email}">${email}</a></div>
+                  </div>
+                  <div class="field">
+                    <div class="label">Offer Price:</div>
+                    <div class="value" style="font-size: 20px; color: #059669; font-weight: bold;">$${parseFloat(price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                  </div>
+                  <div class="footer">
+                    <p>This offer was submitted from the Healthy Daily Bites website.</p>
+                    <p>You can reply directly to this email to contact the offerer.</p>
+                  </div>
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
+        text: `
+New Domain Offer Received
 
-    // For now, we'll log and return success
-    // You should integrate with an actual email service above
-    console.log("Domain Offer Received:", { name, email, price });
-    
-    // In production, replace this with actual email sending code above
-    // For testing, this will show success but won't actually send emails
-    // until you configure an email service
+Name: ${name}
+Email: ${email}
+Offer Price: $${parseFloat(price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+
+This offer was submitted from the Healthy Daily Bites website.
+You can reply to ${email} to contact the offerer.
+        `.trim(),
+      });
+
+      if (error) {
+        console.error("Resend API error:", error);
+        throw new Error(`Email service error: ${error.message}`);
+      }
+
+      console.log("✅ Email sent successfully to info@medziel.de:", data);
+    } catch (emailError: any) {
+      console.error("Error sending email:", emailError);
+      // Log the offer even if email fails
+      console.log("Domain Offer Received (email failed):", { name, email, price });
+      throw emailError;
+    }
 
     return NextResponse.json(
       { 
@@ -54,10 +112,10 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error) {
-    console.error("Error sending offer:", error);
+  } catch (error: any) {
+    console.error("Error processing offer:", error);
     return NextResponse.json(
-      { error: "Failed to send offer. Please try again." },
+      { error: error.message || "Failed to send offer. Please try again." },
       { status: 500 }
     );
   }
