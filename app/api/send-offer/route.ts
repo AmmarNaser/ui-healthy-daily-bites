@@ -19,14 +19,12 @@ export async function POST(request: NextRequest) {
     // Check if Resend API key is configured
     if (!process.env.RESEND_API_KEY) {
       console.error("RESEND_API_KEY is not configured");
-      // Log for development but still return success to user
+      // Log the offer for debugging/record-keeping
       console.log("Domain Offer Received (email not sent - API key missing):", { name, email, price });
+      // Surface a clear error to the client instead of pretending success
       return NextResponse.json(
-        { 
-          success: true,
-          message: "Offer received (email service not configured)" 
-        },
-        { status: 200 }
+        { error: "Email service not configured. Please try again later." },
+        { status: 500 }
       );
     }
 
