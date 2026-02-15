@@ -1,124 +1,108 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { name, email, price } = body;
+    const { name, email, price } = await request.json();
 
-    // Validate required fields
     if (!name || !email || !price) {
       return NextResponse.json(
-        { error: "All fields are required" },
-        { status: 400 }
+        { error: "All fields are required." },
+        { status: 400 },
       );
     }
 
-    // Check if Resend API key is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.error("RESEND_API_KEY is not configured");
-      // Log the offer for debugging/record-keeping
-      console.log("Domain Offer Received (email not sent - API key missing):", { name, email, price });
-      // Surface a clear error to the client instead of pretending success
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
       return NextResponse.json(
-        { error: "Email service not configured. Please try again later." },
-        { status: 500 }
+        { error: "Email service not configured." },
+        { status: 503 },
       );
     }
 
-    // Send email using Resend
-    try {
-      // Use verified sender (from env or default) with user's email as replyTo
-      // This ensures emails are always deliverable regardless of user's email domain
-      const fromEmail = process.env.RESEND_FROM_EMAIL || "Domain Offer <onboarding@resend.dev>";
-      
-      const { data, error } = await resend.emails.send({
-        from: fromEmail,
-        to: "info@medziel.de",
-        replyTo: email,
-        subject: `Domain Offer from ${name} - Healthy Daily Bites`,
-        html: `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
-                .content { background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-top: none; }
-                .field { margin-bottom: 15px; }
-                .label { font-weight: bold; color: #059669; }
-                .value { margin-top: 5px; font-size: 16px; }
-                .footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280; }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <div class="header">
-                  <h2 style="margin: 0;">New Domain Offer Received</h2>
-                </div>
-                <div class="content">
-                  <div class="field">
-                    <div class="label">Name:</div>
-                    <div class="value">${name}</div>
-                  </div>
-                  <div class="field">
-                    <div class="label">Email:</div>
-                    <div class="value"><a href="mailto:${email}">${email}</a></div>
-                  </div>
-                  <div class="field">
-                    <div class="label">Offer Price:</div>
-                    <div class="value" style="font-size: 20px; color: #059669; font-weight: bold;">$${parseFloat(price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                  </div>
-                  <div class="footer">
-                    <p>This offer was submitted from the Healthy Daily Bites website.</p>
-                    <p>You can reply directly to this email to contact the offerer.</p>
-                  </div>
-                </div>
-              </div>
-            </body>
-          </html>
-        `,
-        text: `
-New Domain Offer Received
+    const resend = new Resend(resendApiKey);
+    const formattedPrice = parseFloat(price).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 
-Name: ${name}
-Email: ${email}
-Offer Price: $${parseFloat(price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+    const { error } = await resend.emails.send({
+      from: "Healthy Daily Bites <offers@medziel.de>",
+      to: "info@medziel.de",
+      replyTo: email,
+      subject: `Domain Offer from ${name} - $${formattedPrice}`,
+      text: `New Domain Offer\n\nName: ${name}\nEmail: ${email}\nPrice: $${formattedPrice}\n\nThis offer was submitted from the Healthy Daily Bites website.\nReply to this email to contact the offerer.`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head><meta charset="utf-8"></head>
+          <body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f4;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:20px 0;">
+              <tr>
+                <td align="center">
+                  <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
+                    <tr>
+                      <td style="background:#059669;padding:24px 30px;">
+                        <h1 style="margin:0;color:#ffffff;font-size:22px;">New Domain Offer Received</h1>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:30px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding:8px 0;border-bottom:1px solid #eee;">
+                              <strong style="color:#059669;">Name:</strong>
+                            </td>
+                            <td style="padding:8px 0;border-bottom:1px solid #eee;">${name}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding:8px 0;border-bottom:1px solid #eee;">
+                              <strong style="color:#059669;">Email:</strong>
+                            </td>
+                            <td style="padding:8px 0;border-bottom:1px solid #eee;">
+                              <a href="mailto:${email}" style="color:#059669;">${email}</a>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding:8px 0;">
+                              <strong style="color:#059669;">Offer Price:</strong>
+                            </td>
+                            <td style="padding:8px 0;font-size:20px;font-weight:bold;color:#059669;">
+                              $${formattedPrice}
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:20px 30px;background:#f9fafb;border-top:1px solid #eee;font-size:13px;color:#6b7280;">
+                        <p style="margin:0;">This offer was submitted from the Healthy Daily Bites website.</p>
+                        <p style="margin:8px 0 0;">Reply directly to this email to contact the offerer.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </body>
+        </html>
+      `,
+    });
 
-This offer was submitted from the Healthy Daily Bites website.
-You can reply to ${email} to contact the offerer.
-        `.trim(),
-      });
-
-      if (error) {
-        console.error("Resend API error:", error);
-        throw new Error(`Email service error: ${error.message}`);
-      }
-
-      console.log("✅ Email sent successfully to info@medziel.de:", data);
-    } catch (emailError: any) {
-      console.error("Error sending email:", emailError);
-      // Log the offer even if email fails
-      console.log("Domain Offer Received (email failed):", { name, email, price });
-      throw emailError;
+    if (error) {
+      console.error("Resend error:", error);
+      return NextResponse.json(
+        { error: `Email failed: ${error.message}` },
+        { status: 500 },
+      );
     }
 
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("Send offer error:", err);
     return NextResponse.json(
-      { 
-        success: true,
-        message: "Offer sent successfully" 
-      },
-      { status: 200 }
-    );
-  } catch (error: any) {
-    console.error("Error processing offer:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to send offer. Please try again." },
-      { status: 500 }
+      { error: "Something went wrong. Please try again." },
+      { status: 500 },
     );
   }
 }

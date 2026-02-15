@@ -45,6 +45,11 @@ export default async function Home() {
             <p className="text-emerald-600/70 text-base font-medium">
               Daily Health Tips
             </p>
+            <a
+              href="/archive"
+              className="inline-block mt-3 text-sm font-semibold text-emerald-700 hover:text-emerald-800 underline underline-offset-4 transition-colors">
+              View Archive
+            </a>
           </div>
           {dailyTip ? (
             <TipsPageClient dailyTip={dailyTip} allTips={allTips} />
@@ -63,7 +68,7 @@ export default async function Home() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
             <div className="text-base font-semibold tracking-wide">
-              © 2025 - Ammar
+              © {new Date().getFullYear()} - Ammar
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-6 text-sm">
               <a
