@@ -3,11 +3,11 @@ import { Resend } from "resend";
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, price } = await request.json();
+    const { email } = await request.json();
 
-    if (!name || !email || !price) {
+    if (!email) {
       return NextResponse.json(
-        { error: "All fields are required." },
+        { error: "Email is required." },
         { status: 400 },
       );
     }
@@ -21,17 +21,13 @@ export async function POST(request: NextRequest) {
     }
 
     const resend = new Resend(resendApiKey);
-    const formattedPrice = parseFloat(price).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
 
     const { error } = await resend.emails.send({
       from: "Healthy Daily Bites <offers@medziel.de>",
       to: "info@medziel.de",
       replyTo: email,
-      subject: `Domain Offer from ${name} - $${formattedPrice}`,
-      text: `New Domain Offer\n\nName: ${name}\nEmail: ${email}\nPrice: $${formattedPrice}\n\nThis offer was submitted from the Healthy Daily Bites website.\nReply to this email to contact the offerer.`,
+      subject: `Domain interest from ${email} - $500 asking price`,
+      text: `New Domain Sale Interest\n\nEmail: ${email}\n\nThis person is interested in the $500 domain offer on the Healthy Daily Bites website.\nReply to this email to contact them.`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -42,8 +38,8 @@ export async function POST(request: NextRequest) {
                 <td align="center">
                   <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
                     <tr>
-                      <td style="background:#059669;padding:24px 30px;">
-                        <h1 style="margin:0;color:#ffffff;font-size:22px;">New Domain Offer Received</h1>
+                      <td style="background:#0f9d6a;padding:24px 30px;">
+                        <h1 style="margin:0;color:#ffffff;font-size:22px;">New Domain Sale Interest</h1>
                       </td>
                     </tr>
                     <tr>
@@ -51,24 +47,18 @@ export async function POST(request: NextRequest) {
                         <table width="100%" cellpadding="0" cellspacing="0">
                           <tr>
                             <td style="padding:8px 0;border-bottom:1px solid #eee;">
-                              <strong style="color:#059669;">Name:</strong>
-                            </td>
-                            <td style="padding:8px 0;border-bottom:1px solid #eee;">${name}</td>
-                          </tr>
-                          <tr>
-                            <td style="padding:8px 0;border-bottom:1px solid #eee;">
-                              <strong style="color:#059669;">Email:</strong>
+                              <strong style="color:#0f9d6a;">Email:</strong>
                             </td>
                             <td style="padding:8px 0;border-bottom:1px solid #eee;">
-                              <a href="mailto:${email}" style="color:#059669;">${email}</a>
+                              <a href="mailto:${email}" style="color:#0f9d6a;">${email}</a>
                             </td>
                           </tr>
                           <tr>
                             <td style="padding:8px 0;">
-                              <strong style="color:#059669;">Offer Price:</strong>
+                              <strong style="color:#0f9d6a;">Asking Price:</strong>
                             </td>
-                            <td style="padding:8px 0;font-size:20px;font-weight:bold;color:#059669;">
-                              $${formattedPrice}
+                            <td style="padding:8px 0;font-size:20px;font-weight:bold;color:#0f9d6a;">
+                              $500
                             </td>
                           </tr>
                         </table>
@@ -76,8 +66,8 @@ export async function POST(request: NextRequest) {
                     </tr>
                     <tr>
                       <td style="padding:20px 30px;background:#f9fafb;border-top:1px solid #eee;font-size:13px;color:#6b7280;">
-                        <p style="margin:0;">This offer was submitted from the Healthy Daily Bites website.</p>
-                        <p style="margin:8px 0 0;">Reply directly to this email to contact the offerer.</p>
+                        <p style="margin:0;">This interest was submitted from the Healthy Daily Bites website.</p>
+                        <p style="margin:8px 0 0;">Reply directly to this email to get in touch.</p>
                       </td>
                     </tr>
                   </table>

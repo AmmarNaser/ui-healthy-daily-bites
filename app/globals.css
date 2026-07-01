@@ -1,39 +1,54 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f0fdf4;
-  --foreground: #1a3a2e;
-  --green-primary: #22c55e;
-  --green-dark: #16a34a;
-  --green-light: #86efac;
-  --off-white: #fafafa;
+  --background: #f6f8f7;
+  --foreground: #14211c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-public-sans);
+
+  --color-hdb-accent: #0f9d6a;
+  --color-hdb-accent-light: #e3f4ec;
+  --color-hdb-dark: #0d221a;
+  --color-hdb-dark-2: #0a1b14;
+  --color-hdb-dark-border: #2c4438;
+  --color-hdb-dark-text: #dff7ec;
+  --color-hdb-success: #7cf0b6;
+  --color-hdb-success-dot: #4ade9c;
+  --color-hdb-border: #e4eae7;
+  --color-hdb-border-light: #eef2f0;
+  --color-hdb-muted: #6b7972;
+  --color-hdb-muted-2: #8a978f;
+  --color-hdb-text-soft: #4a5852;
+  --color-hdb-nav-idle: #5c6b64;
+  --color-hdb-footer-text: #a9c8b9;
 }
 
 html,
 body {
-  height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
 body {
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-public-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-@keyframes fadeInUp {
+input:focus {
+  border-color: #0f9d6a !important;
+  box-shadow: 0 0 0 3px rgba(15, 157, 106, 0.15);
+}
+
+@keyframes hdbFade {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -41,6 +56,44 @@ body {
   }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out;
+@keyframes hdbOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hdbPop {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-hdb-fade {
+  animation: hdbFade 0.5s ease-out;
+}
+
+.animate-hdb-overlay {
+  animation: hdbOverlay 0.2s ease-out;
+}
+
+.animate-hdb-pop {
+  animation: hdbPop 0.28s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cdd8d2;
+  border-radius: 8px;
 }
