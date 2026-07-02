@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
 type Theme = "light" | "dark";
@@ -14,13 +14,30 @@ function applyTheme(theme: Theme) {
   }
 }
 
+function resolveStoredTheme(): Theme {
+  try {
+    const stored = localStorage.getItem("hdb-theme");
+    if (stored === "light" || stored === "dark") return stored;
+  } catch {
+    // localStorage may be unavailable (e.g. private mode) — fall through to system preference.
+  }
+  if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    return "dark";
+  }
+  return "light";
+}
+
 export default function ThemeToggle() {
   const t = useTranslations("SiteHeader");
   const [theme, setTheme] = useState<Theme>("light");
 
-  useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme");
-    setTheme(current === "dark" ? "dark" : "light");
+  // Locale switches re-render the root layout (it's the outermost segment),
+  // which remounts <html> and wipes the data-theme attribute the anti-flash
+  // script set. Re-derive and re-apply it on every mount, not just read it.
+  useLayoutEffect(() => {
+    const resolved = resolveStoredTheme();
+    document.documentElement.setAttribute("data-theme", resolved);
+    setTheme(resolved);
   }, []);
 
   const toggleTheme = () => {
