@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function SaleBanner() {
+  const t = useTranslations("SaleBanner");
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [offerSent, setOfferSent] = useState(false);
@@ -32,7 +34,7 @@ export default function SaleBanner() {
         setErrorMessage(
           typeof data?.error === "string" && data.error.length > 0
             ? data.error
-            : `Failed to send. Please try again.`,
+            : t("genericError"),
         );
         setIsSubmitting(false);
         return;
@@ -41,7 +43,7 @@ export default function SaleBanner() {
       setOfferSent(true);
       setIsSubmitting(false);
     } catch {
-      setErrorMessage("Could not submit due to a network issue. Please try again.");
+      setErrorMessage(t("networkError"));
       setIsSubmitting(false);
     }
   };
@@ -52,7 +54,7 @@ export default function SaleBanner() {
         <div className="flex items-center gap-[11px] text-sm font-semibold">
           <span className="h-2 w-2 flex-none rounded-full bg-hdb-success-dot shadow-[0_0_0_4px_rgba(74,222,156,0.22)]" />
           <span>
-            This domain is for sale — <b className="font-extrabold text-hdb-success">$500</b>
+            {t("forSale")} <b className="font-extrabold text-hdb-success">$500</b>
           </span>
         </div>
 
@@ -63,7 +65,7 @@ export default function SaleBanner() {
                 <path d="M4 12l5 5L20 6" />
               </svg>
             </span>
-            Offer sent — we&apos;ll be in touch.
+            {t("offerSent")}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-wrap items-start gap-2">
@@ -73,7 +75,7 @@ export default function SaleBanner() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                placeholder={t("emailPlaceholder")}
                 className="h-[38px] w-[210px] max-w-[52vw] rounded-[9px] border border-hdb-dark-border bg-hdb-dark-2 px-[13px] text-[13px] text-hdb-dark-text outline-none transition-shadow"
               />
               <button
@@ -81,7 +83,7 @@ export default function SaleBanner() {
                 disabled={isSubmitting}
                 className="h-[38px] whitespace-nowrap rounded-[9px] bg-hdb-accent px-[18px] text-[13px] font-bold text-white disabled:opacity-60"
               >
-                {isSubmitting ? "Sending…" : "Make offer"}
+                {isSubmitting ? t("sending") : t("makeOffer")}
               </button>
             </div>
             {errorMessage && (

@@ -1,0 +1,38 @@
+{
+  "Metadata": {
+    "title": "Heutiger Gesundheitstipp - Healthy Daily Bites",
+    "description": "Tägliche Gesundheitstipps und Wellness-Informationen"
+  },
+  "SaleBanner": {
+    "forSale": "Diese Domain steht zum Verkauf —",
+    "emailPlaceholder": "deine@email.com",
+    "makeOffer": "Angebot machen",
+    "sending": "Wird gesendet…",
+    "offerSent": "Angebot gesendet — wir melden uns bei dir.",
+    "genericError": "Senden fehlgeschlagen. Bitte versuche es erneut.",
+    "networkError": "Übermittlung wegen eines Netzwerkproblems fehlgeschlagen. Bitte versuche es erneut."
+  },
+  "SiteHeader": {
+    "today": "Heute",
+    "archive": "Archiv"
+  },
+  "Today": {
+    "badge": "Heutiger Tipp",
+    "lookingForMore": "Auf der Suche nach mehr? Alle veröffentlichten Tipps durchstöbern.",
+    "viewArchive": "Archiv ansehen",
+    "noTip": "Derzeit sind keine Informationen verfügbar"
+  },
+  "QuickTip": {
+    "label": "Kurztipp"
+  },
+  "Archive": {
+    "title": "Tipp-Archiv",
+    "subtitle": "Alle bisher veröffentlichten Gesundheitstipps, neueste zuerst. Karte antippen für die vollständige Ansicht.",
+    "readTip": "Tipp lesen",
+    "empty": "Derzeit sind keine Tipps im Archiv verfügbar."
+  },
+  "TipDetailModal": {
+    "whyItMatters": "Warum das wichtig ist",
+    "close": "Schließen"
+  }
+}

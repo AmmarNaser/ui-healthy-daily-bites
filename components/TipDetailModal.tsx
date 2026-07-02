@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { DailyTip } from "@/lib/getDailyTip";
 import BenefitCard from "@/components/BenefitCard";
 import QuickTip from "@/components/QuickTip";
@@ -10,6 +11,8 @@ interface TipDetailModalProps {
 }
 
 export default function TipDetailModal({ tip, onClose }: TipDetailModalProps) {
+  const t = useTranslations("TipDetailModal");
+
   return (
     <div
       onClick={onClose}
@@ -22,7 +25,7 @@ export default function TipDetailModal({ tip, onClose }: TipDetailModalProps) {
         <div className="relative border-b border-hdb-border bg-background px-[clamp(22px,4vw,34px)] py-[clamp(22px,4vw,32px)]">
           <button
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("close")}
             className="absolute right-[18px] top-[18px] flex h-9 w-9 items-center justify-center rounded-[9px] border border-hdb-border bg-white text-[#5c6b64]"
           >
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
@@ -43,7 +46,7 @@ export default function TipDetailModal({ tip, onClose }: TipDetailModalProps) {
           {tip.steps && tip.steps.length > 0 && (
             <>
               <div className="mb-4 text-xs font-extrabold uppercase tracking-[0.13em] text-hdb-accent">
-                Why it matters
+                {t("whyItMatters")}
               </div>
               <div className="mb-6 grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-3">
                 {tip.steps.map((step) => (

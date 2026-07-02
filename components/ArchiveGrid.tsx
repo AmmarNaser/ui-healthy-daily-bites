@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { DailyTip } from "@/lib/getDailyTip";
 import TipDetailModal from "@/components/TipDetailModal";
 
@@ -9,13 +10,14 @@ interface ArchiveGridProps {
 }
 
 export default function ArchiveGrid({ tips }: ArchiveGridProps) {
+  const t = useTranslations("Archive");
   const [openId, setOpenId] = useState<string | null>(null);
-  const openTip = tips.find((t) => t.id === openId) ?? null;
+  const openTip = tips.find((tip) => tip.id === openId) ?? null;
 
   if (tips.length === 0) {
     return (
       <div className="rounded-2xl border border-hdb-border-light bg-white p-6">
-        <p className="text-hdb-muted">No tips are available in the archive right now.</p>
+        <p className="text-hdb-muted">{t("empty")}</p>
       </div>
     );
   }
@@ -36,7 +38,7 @@ export default function ArchiveGrid({ tips }: ArchiveGridProps) {
             <div className="text-xl font-extrabold leading-[1.15] tracking-[-0.015em] text-foreground">{tip.title}</div>
             <div className="text-sm leading-[1.55] text-hdb-muted">{tip.content}</div>
             <div className="mt-auto inline-flex items-center gap-[7px] pt-1.5 text-[13.5px] font-bold text-hdb-accent">
-              Read tip
+              {t("readTip")}
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>

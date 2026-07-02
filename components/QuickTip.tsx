@@ -1,9 +1,13 @@
+import { useTranslations } from "next-intl";
+
 interface QuickTipProps {
   text: string;
   variant?: "hero" | "modal";
 }
 
 export default function QuickTip({ text, variant = "hero" }: QuickTipProps) {
+  const t = useTranslations("QuickTip");
+
   if (variant === "modal") {
     return (
       <div className="flex items-center gap-[14px] rounded-[13px] bg-hdb-accent-light px-5 py-[18px]">
@@ -13,7 +17,7 @@ export default function QuickTip({ text, variant = "hero" }: QuickTipProps) {
           </svg>
         </span>
         <div>
-          <div className="mb-[3px] text-[11px] font-extrabold uppercase tracking-[0.14em] text-hdb-accent">Quick tip</div>
+          <div className="mb-[3px] text-[11px] font-extrabold uppercase tracking-[0.14em] text-hdb-accent">{t("label")}</div>
           <div className="text-[14.5px] font-semibold leading-[1.5] text-foreground">{text}</div>
         </div>
       </div>
@@ -28,7 +32,7 @@ export default function QuickTip({ text, variant = "hero" }: QuickTipProps) {
         </svg>
       </span>
       <div className="min-w-[220px] flex-1">
-        <div className="mb-1 text-[11px] font-extrabold uppercase tracking-[0.15em] text-[#c8f5e2]">Quick tip</div>
+        <div className="mb-1 text-[11px] font-extrabold uppercase tracking-[0.15em] text-[#c8f5e2]">{t("label")}</div>
         <div className="text-[clamp(15px,2.2vw,16.5px)] font-semibold leading-[1.5] text-white">{text}</div>
       </div>
     </div>

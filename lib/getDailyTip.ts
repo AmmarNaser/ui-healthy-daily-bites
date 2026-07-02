@@ -149,43 +149,77 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export async function getDailyTip(date?: Date): Promise<DailyTip | null> {
+// English ("daily") is the bot-managed source of truth for which dates exist.
+// German ("daily-de") is a manually maintained overlay; missing dates fall
+// back to the English content so the site never breaks for untranslated tips.
+const CONTENT_DIR_BY_LOCALE: Record<string, string> = {
+  en: "daily",
+  de: "daily-de",
+};
+
+const DATE_LOCALE_BY_LOCALE: Record<string, string> = {
+  en: "en-US",
+  de: "de-DE",
+};
+
+async function readTipFile(
+  locale: string,
+  dateString: string,
+): Promise<string> {
+  const dir = CONTENT_DIR_BY_LOCALE[locale] ?? CONTENT_DIR_BY_LOCALE.en;
+  const filePath = join(process.cwd(), "content", dir, `${dateString}.md`);
+  try {
+    return await readFile(filePath, "utf-8");
+  } catch {
+    if (dir === CONTENT_DIR_BY_LOCALE.en) throw new Error("not found");
+    // Fall back to English when no translation exists for this date yet.
+    const fallbackPath = join(
+      process.cwd(),
+      "content",
+      CONTENT_DIR_BY_LOCALE.en,
+      `${dateString}.md`,
+    );
+    return await readFile(fallbackPath, "utf-8");
+  }
+}
+
+function buildTip(
+  dateString: string,
+  tipDate: Date,
+  locale: string,
+  fileContent: string,
+): DailyTip {
+  const parsed = parseMarkdown(fileContent);
+  return {
+    id: dateString,
+    title: parsed.title || "Daily Health Tip",
+    content: parsed.shortTip || parsed.title || "Health tip for today",
+    date: tipDate.toLocaleDateString(
+      DATE_LOCALE_BY_LOCALE[locale] ?? DATE_LOCALE_BY_LOCALE.en,
+      { year: "numeric", month: "long", day: "numeric" },
+    ),
+    fullContent: parsed.fullContent,
+    healthTip: parsed.healthTip,
+    steps: parsed.steps,
+    quickTip: parsed.quickTip,
+  };
+}
+
+export async function getDailyTip(
+  locale: string,
+  date?: Date,
+): Promise<DailyTip | null> {
   try {
     const targetDate = date || new Date();
     const dateString = formatDate(targetDate);
-    const filePath = join(
-      process.cwd(),
-      "content",
-      "daily",
-      `${dateString}.md`
-    );
 
     try {
-      const fileContent = await readFile(filePath, "utf-8");
-      const parsed = parseMarkdown(fileContent);
-
-      return {
-        id: dateString,
-        title: parsed.title || "Daily Health Tip",
-        content: parsed.shortTip || parsed.title || "Health tip for today",
-        date: targetDate.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-        fullContent: parsed.fullContent,
-        healthTip: parsed.healthTip,
-        steps: parsed.steps,
-        quickTip: parsed.quickTip,
-      };
+      const fileContent = await readTipFile(locale, dateString);
+      return buildTip(dateString, targetDate, locale, fileContent);
     } catch {
-      // File doesn't exist for this date, try to get the most recent tip
-      const allTips = await getAllDailyTips();
-      if (allTips.length > 0) {
-        // Return the most recent tip (already sorted by date, newest first)
-        return allTips[0];
-      }
-      return null;
+      // No file for this date at all, fall back to the most recent tip.
+      const allTips = await getAllDailyTips(locale);
+      return allTips.length > 0 ? allTips[0] : null;
     }
   } catch (error) {
     console.error("Error reading daily tip:", error);
@@ -193,9 +227,15 @@ export async function getDailyTip(date?: Date): Promise<DailyTip | null> {
   }
 }
 
-export async function getAllDailyTips(): Promise<DailyTip[]> {
+export async function getAllDailyTips(locale: string): Promise<DailyTip[]> {
   try {
-    const contentDir = join(process.cwd(), "content", "daily");
+    // Enumerate dates from the English directory since it's the guaranteed
+    // complete set; each date is then resolved (with fallback) per locale.
+    const contentDir = join(
+      process.cwd(),
+      "content",
+      CONTENT_DIR_BY_LOCALE.en,
+    );
     const files = await readdir(contentDir);
     const mdFiles = files.filter((file) => file.endsWith(".md"));
 
@@ -203,29 +243,12 @@ export async function getAllDailyTips(): Promise<DailyTip[]> {
 
     for (const file of mdFiles) {
       try {
-        const filePath = join(contentDir, file);
-        const fileContent = await readFile(filePath, "utf-8");
-        const parsed = parseMarkdown(fileContent);
         const dateString = file.replace(".md", "");
-
-        // Parse date from filename
         const [year, month, day] = dateString.split("-").map(Number);
         const tipDate = new Date(year, month - 1, day);
+        const fileContent = await readTipFile(locale, dateString);
 
-        tips.push({
-          id: dateString,
-          title: parsed.title || "Daily Health Tip",
-          content: parsed.shortTip || parsed.title || "Health tip",
-          date: tipDate.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-          fullContent: parsed.fullContent,
-          healthTip: parsed.healthTip,
-          steps: parsed.steps,
-          quickTip: parsed.quickTip,
-        });
+        tips.push(buildTip(dateString, tipDate, locale, fileContent));
       } catch (fileError) {
         console.error(`Error reading file ${file}:`, fileError);
       }

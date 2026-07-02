@@ -1,0 +1,38 @@
+{
+  "Metadata": {
+    "title": "Today's Health Tip - Healthy Daily Bites",
+    "description": "Daily health tips and wellness information"
+  },
+  "SaleBanner": {
+    "forSale": "This domain is for sale —",
+    "emailPlaceholder": "your@email.com",
+    "makeOffer": "Make offer",
+    "sending": "Sending…",
+    "offerSent": "Offer sent — we'll be in touch.",
+    "genericError": "Failed to send. Please try again.",
+    "networkError": "Could not submit due to a network issue. Please try again."
+  },
+  "SiteHeader": {
+    "today": "Today",
+    "archive": "Archive"
+  },
+  "Today": {
+    "badge": "Today's Tip",
+    "lookingForMore": "Looking for more? Browse every published tip.",
+    "viewArchive": "View archive",
+    "noTip": "No information available at the moment"
+  },
+  "QuickTip": {
+    "label": "Quick tip"
+  },
+  "Archive": {
+    "title": "Tip Archive",
+    "subtitle": "Every health tip we've published, newest first. Tap any card to read the full breakdown.",
+    "readTip": "Read tip",
+    "empty": "No tips are available in the archive right now."
+  },
+  "TipDetailModal": {
+    "whyItMatters": "Why it matters",
+    "close": "Close"
+  }
+}

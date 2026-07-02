@@ -1,12 +1,21 @@
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { getDailyTip } from "@/lib/getDailyTip";
 import BenefitCard from "@/components/BenefitCard";
 import QuickTip from "@/components/QuickTip";
 
-export default async function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("Today");
+
   let dailyTip = null;
   try {
-    dailyTip = await getDailyTip();
+    dailyTip = await getDailyTip(locale);
   } catch (error) {
     console.error("Error loading tips:", error);
   }
@@ -14,7 +23,7 @@ export default async function Home() {
   if (!dailyTip) {
     return (
       <div className="rounded-2xl border-2 border-dashed border-hdb-border bg-white p-8 text-center">
-        <p className="text-lg text-hdb-muted">No information available at the moment</p>
+        <p className="text-lg text-hdb-muted">{t("noTip")}</p>
       </div>
     );
   }
@@ -23,7 +32,7 @@ export default async function Home() {
     <div className="animate-hdb-fade">
       <div className="mb-[18px] flex flex-wrap items-center gap-3">
         <span className="rounded-full bg-hdb-accent-light px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-hdb-accent">
-          Today&apos;s Tip
+          {t("badge")}
         </span>
         <span className="text-[13px] font-semibold text-hdb-muted-2">{dailyTip.date}</span>
       </div>
@@ -51,12 +60,12 @@ export default async function Home() {
       {dailyTip.quickTip && <QuickTip text={dailyTip.quickTip} />}
 
       <div className="mt-9 flex flex-wrap items-center justify-between gap-4 border-t border-hdb-border pt-6">
-        <div className="text-sm text-hdb-muted">Looking for more? Browse every published tip.</div>
+        <div className="text-sm text-hdb-muted">{t("lookingForMore")}</div>
         <Link
           href="/archive"
           className="inline-flex items-center gap-2 rounded-[10px] bg-foreground px-5 py-3 text-sm font-bold text-white"
         >
-          View archive
+          {t("viewArchive")}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M13 6l6 6-6 6" />
           </svg>
