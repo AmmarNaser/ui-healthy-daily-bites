@@ -60,7 +60,7 @@ export default function SaleBanner() {
 
         {offerSent ? (
           <div className="flex items-center gap-[9px] text-[13.5px] font-semibold text-hdb-success">
-            <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-hdb-accent">
+            <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-hdb-accent-strong">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 12l5 5L20 6" />
               </svg>
@@ -81,7 +81,7 @@ export default function SaleBanner() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="h-[38px] whitespace-nowrap rounded-[9px] bg-hdb-accent px-[18px] text-[13px] font-bold text-white disabled:opacity-60"
+                className="h-[38px] whitespace-nowrap rounded-[9px] bg-hdb-accent-strong px-[18px] text-[13px] font-bold text-white disabled:opacity-60"
               >
                 {isSubmitting ? t("sending") : t("makeOffer")}
               </button>

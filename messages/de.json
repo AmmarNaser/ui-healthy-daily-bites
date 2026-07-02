@@ -14,7 +14,8 @@
   },
   "SiteHeader": {
     "today": "Heute",
-    "archive": "Archiv"
+    "archive": "Archiv",
+    "toggleTheme": "Dunkelmodus umschalten"
   },
   "Today": {
     "badge": "Heutiger Tipp",

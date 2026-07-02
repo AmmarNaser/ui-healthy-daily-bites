@@ -14,7 +14,8 @@
   },
   "SiteHeader": {
     "today": "Today",
-    "archive": "Archive"
+    "archive": "Archive",
+    "toggleTheme": "Toggle dark mode"
   },
   "Today": {
     "badge": "Today's Tip",

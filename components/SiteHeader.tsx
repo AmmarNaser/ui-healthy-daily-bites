@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -19,10 +20,10 @@ export default function SiteHeader() {
   const langIdle = `${langBase} text-hdb-nav-idle hover:bg-hdb-accent-light/60`;
 
   return (
-    <header className="sticky top-0 z-20 border-b border-hdb-border-light bg-white">
+    <header className="sticky top-0 z-20 border-b border-hdb-border-light bg-hdb-header transition-colors">
       <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-between gap-4 px-[clamp(18px,4vw,40px)] py-4">
         <Link href="/" className="flex items-center gap-[11px]">
-          <span className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-[9px] bg-hdb-accent text-[17px] font-black text-white">
+          <span className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-[9px] bg-hdb-accent-strong text-[17px] font-black text-white">
             H
           </span>
           <span className="text-lg font-extrabold tracking-[-0.015em] text-foreground">
@@ -37,6 +38,7 @@ export default function SiteHeader() {
             <Link href="/archive" className={isArchive ? navActive : navIdle}>
               {t("archive")}
             </Link>
+            <ThemeToggle />
           </nav>
           <div className="flex items-center gap-1 border-l border-hdb-border-light pl-4">
             <Link

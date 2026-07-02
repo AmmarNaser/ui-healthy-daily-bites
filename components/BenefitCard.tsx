@@ -8,8 +8,8 @@ interface BenefitCardProps {
 export default function BenefitCard({ number, title, description, variant = "hero" }: BenefitCardProps) {
   if (variant === "modal") {
     return (
-      <div className="flex items-start gap-[13px] rounded-[13px] border border-hdb-border-light bg-background p-4">
-        <span className="flex h-7 w-7 flex-none items-center justify-center rounded-[8px] bg-hdb-accent text-[13px] font-extrabold text-white">
+      <div className="flex items-start gap-[13px] rounded-[13px] border border-hdb-border-light bg-hdb-surface-2 p-4">
+        <span className="flex h-7 w-7 flex-none items-center justify-center rounded-[8px] bg-hdb-accent-strong text-[13px] font-extrabold text-white">
           {number}
         </span>
         <div>
@@ -21,7 +21,7 @@ export default function BenefitCard({ number, title, description, variant = "her
   }
 
   return (
-    <div className="flex items-start gap-[14px] rounded-[14px] border border-hdb-border bg-white p-5 px-[22px]">
+    <div className="flex items-start gap-[14px] rounded-[14px] border border-hdb-border bg-hdb-surface p-5 px-[22px]">
       <span className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-[8px] bg-hdb-accent-light text-sm font-extrabold text-hdb-accent">
         {number}
       </span>

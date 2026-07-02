@@ -3,7 +3,7 @@ export default function SiteFooter() {
     <footer className="bg-hdb-dark text-hdb-footer-text">
       <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-between gap-[18px] px-[clamp(18px,4vw,40px)] py-[26px]">
         <div className="flex items-center gap-[10px] text-[13.5px]">
-          <span className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-[7px] bg-hdb-accent text-[13px] font-black text-white">
+          <span className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-[7px] bg-hdb-accent-strong text-[13px] font-black text-white">
             H
           </span>
           <span className="font-semibold text-[#dbeee4]">

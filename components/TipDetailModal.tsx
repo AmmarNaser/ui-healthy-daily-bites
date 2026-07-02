@@ -20,13 +20,13 @@ export default function TipDetailModal({ tip, onClose }: TipDetailModalProps) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="animate-hdb-pop w-full max-w-[720px] overflow-hidden rounded-[20px] bg-white shadow-[0_40px_80px_-30px_rgba(10,25,18,0.6)]"
+        className="animate-hdb-pop w-full max-w-[720px] overflow-hidden rounded-[20px] bg-hdb-surface shadow-[0_40px_80px_-30px_rgba(10,25,18,0.6)]"
       >
-        <div className="relative border-b border-hdb-border bg-background px-[clamp(22px,4vw,34px)] py-[clamp(22px,4vw,32px)]">
+        <div className="relative border-b border-hdb-border bg-hdb-surface-2 px-[clamp(22px,4vw,34px)] py-[clamp(22px,4vw,32px)]">
           <button
             onClick={onClose}
             aria-label={t("close")}
-            className="absolute right-[18px] top-[18px] flex h-9 w-9 items-center justify-center rounded-[9px] border border-hdb-border bg-white text-[#5c6b64]"
+            className="absolute right-[18px] top-[18px] flex h-9 w-9 items-center justify-center rounded-[9px] border border-hdb-border bg-hdb-surface text-hdb-nav-idle"
           >
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <path d="M6 6l12 12M18 6L6 18" />

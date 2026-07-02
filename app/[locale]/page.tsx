@@ -22,7 +22,7 @@ export default async function Home({
 
   if (!dailyTip) {
     return (
-      <div className="rounded-2xl border-2 border-dashed border-hdb-border bg-white p-8 text-center">
+      <div className="rounded-2xl border-2 border-dashed border-hdb-border bg-hdb-surface p-8 text-center">
         <p className="text-lg text-hdb-muted">{t("noTip")}</p>
       </div>
     );
@@ -63,7 +63,7 @@ export default async function Home({
         <div className="text-sm text-hdb-muted">{t("lookingForMore")}</div>
         <Link
           href="/archive"
-          className="inline-flex items-center gap-2 rounded-[10px] bg-foreground px-5 py-3 text-sm font-bold text-white"
+          className="inline-flex items-center gap-2 rounded-[10px] bg-foreground px-5 py-3 text-sm font-bold text-background"
         >
           {t("viewArchive")}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">

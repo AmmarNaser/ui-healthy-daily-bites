@@ -46,7 +46,14 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} dir="ltr">
+    <html lang={locale} dir="ltr" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('hdb-theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className={`${publicSans.variable} antialiased flex flex-col min-h-screen bg-background`}>
         <NextIntlClientProvider>
           <div className="flex min-h-screen flex-col bg-background">

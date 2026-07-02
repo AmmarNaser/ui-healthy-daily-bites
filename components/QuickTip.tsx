@@ -11,7 +11,7 @@ export default function QuickTip({ text, variant = "hero" }: QuickTipProps) {
   if (variant === "modal") {
     return (
       <div className="flex items-center gap-[14px] rounded-[13px] bg-hdb-accent-light px-5 py-[18px]">
-        <span className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-[9px] bg-hdb-accent">
+        <span className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-[9px] bg-hdb-accent-strong">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
             <path d="M13 2L4.5 12.5a7 7 0 1 0 15 0L13 2z" />
           </svg>
@@ -25,7 +25,7 @@ export default function QuickTip({ text, variant = "hero" }: QuickTipProps) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-[18px] rounded-2xl bg-hdb-accent px-[clamp(22px,3vw,28px)] py-[clamp(20px,3vw,26px)]">
+    <div className="flex flex-wrap items-center gap-[18px] rounded-2xl bg-hdb-accent-strong px-[clamp(22px,3vw,28px)] py-[clamp(20px,3vw,26px)]">
       <span className="flex h-[42px] w-[42px] flex-none items-center justify-center rounded-[11px] bg-white/16">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
           <path d="M13 2L4.5 12.5a7 7 0 1 0 15 0L13 2z" />

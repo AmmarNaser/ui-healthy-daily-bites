@@ -16,7 +16,7 @@ export default function ArchiveGrid({ tips }: ArchiveGridProps) {
 
   if (tips.length === 0) {
     return (
-      <div className="rounded-2xl border border-hdb-border-light bg-white p-6">
+      <div className="rounded-2xl border border-hdb-border-light bg-hdb-surface p-6">
         <p className="text-hdb-muted">{t("empty")}</p>
       </div>
     );
@@ -29,7 +29,7 @@ export default function ArchiveGrid({ tips }: ArchiveGridProps) {
           <button
             key={tip.id}
             onClick={() => setOpenId(tip.id)}
-            className="group flex flex-col gap-3 rounded-2xl border border-hdb-border bg-white px-6 py-[22px] text-left transition-all duration-200 hover:-translate-y-[3px] hover:border-[#cfe6dc] hover:shadow-[0_18px_34px_-20px_rgba(20,50,38,0.35)]"
+            className="group flex flex-col gap-3 rounded-2xl border border-hdb-border bg-hdb-surface px-6 py-[22px] text-left transition-all duration-200 hover:-translate-y-[3px] hover:border-hdb-accent hover:shadow-[var(--hdb-card-shadow)]"
           >
             <div className="flex items-center gap-[9px]">
               <span className="h-[7px] w-[7px] flex-none rounded-full bg-hdb-accent" />
